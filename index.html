@@ -266,7 +266,7 @@ function sauvegarder() {
 function charger() {
   let bagues = JSON.parse(localStorage.getItem("bagues") || "[]");
   let fraises = JSON.parse(localStorage.getItem("fraises") || "[]");
-  if (bagues.length === 0) bagues = [[10,8],[12,10],[14,12],[16,14],[18,16]];
+  if (bagues.length === 0) bagues = [[10,8],[12,10],[14,12],[16,14],[18,16], [20,18],[24,22],[30,28],[40,28],[60,28]];
   if (fraises.length === 0) fraises = [[8],[10],[12],[14],[16],[19]];
 
   bagues.forEach(b => ajouterLigne('tableBagues', b));
