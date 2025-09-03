@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Calcul Bague/Fraise - Style Filetage</title>
+<title>Calcul Bague/Fraise</title>
 <style>
 body {
   font-family: Arial, sans-serif;
@@ -57,7 +57,7 @@ h2 {
 /* Boutons généraux */
 button {
   padding: 12px 20px;
-  margin: 8px 4px;
+  margin: 8px;
   cursor: pointer;
   font-size: 16px;
   border-radius: 6px;
@@ -70,84 +70,76 @@ button:hover {
   background: #0056b3;
 }
 
-/* Tableau style Filetage */
+/* Table style "Filetage" */
 table {
-  border-collapse: separate;
-  border-spacing: 8px;
-  background: #f5f5f5;
   width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
   margin-bottom: 20px;
+  font-size: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
+/* En-têtes */
 th {
   background: #007bff;
   color: white;
   font-weight: bold;
-  border-radius: 8px;
-  padding: 10px;
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-td {
-  background: white;
-  border-radius: 8px;
   padding: 12px;
   text-align: center;
+}
+
+/* Cellules */
+td {
+  background: #f9f9f9;
+  text-align: center;
+  padding: 10px 12px;
   vertical-align: middle;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  min-width: 60px;
-  font-size: 16px;
   word-break: break-word;
 }
 
-/* Résultats style Filetage */
+/* Alternance de couleur des lignes */
+tbody tr:nth-child(odd) td {
+  background: #f0f4f8;
+}
+tbody tr:nth-child(even) td {
+  background: #ffffff;
+}
+
+/* Cellules contenteditable */
+td[contenteditable] {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 12px;
+  min-width: 50px;
+  line-height: 1.4em;
+  vertical-align: middle;
+}
+
+/* Spans pour couple / fraise / décalage */
 .couple-cell, .fraise-cell, .decalage-cell {
   display: inline-block;
-  padding: 8px 14px;
-  border-radius: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
   font-weight: bold;
-  margin: 2px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  margin: 2px 2px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
-.fraise-cell { background-color: #cce5ff; color: #000; }
-.couple-cell { background-color: #d4edda; color: #000; }
-.decalage-cell { background-color: #fff3cd; color: #000; }
+.fraise-cell { background: #d0e8ff; color: #000; }
+.couple-cell { background: #b8f5d4; color: #000; }
+.decalage-cell { background: #fff3cd; color: #000; }
 
-/* Contenteditable uniforme */
-td[contenteditable] {
-  background: #f9f9f9;
-  border-radius: 8px;
-  min-height: 2em;
-  padding: 8px;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-  font-size: 16px;
-}
-
-/* Centrer et hauteur proportionnelle pour tous les résultats */
-#resultatsPrincipal td,
-#resultatsInclusion td,
-#tableBagues td,
-#tableFraises td {
-  vertical-align: middle;
-  line-height: 1.4em;
-}
-
-/* Responsive smartphone */
+/* Responsive */
 @media(max-width:600px) {
   table {
     display: block;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    width: 100%;
-    border-spacing: 6px;
   }
   th, td {
-    min-width: 80px;
-    padding: 6px;
-  }
-  td[contenteditable] {
-    min-width: 70px;
+    white-space: nowrap;
   }
 }
 </style>
@@ -221,6 +213,7 @@ td[contenteditable] {
 </div>
 
 <script>
+// Gestion onglets
 function openTab(tabId, btn) {
   document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
   document.getElementById(tabId).classList.add("active");
@@ -228,18 +221,17 @@ function openTab(tabId, btn) {
   btn.classList.add("active");
 }
 
+// Ajouter / supprimer / reset lignes
 function ajouterLigne(tableId, values = []) {
   const table = document.getElementById(tableId).getElementsByTagName('tbody')[0];
   const newRow = table.insertRow();
   if (tableId === 'tableBagues') {
-    newRow.innerHTML = `
-      <td contenteditable="true">${values[0] || ""}</td>
-      <td contenteditable="true">${values[1] || ""}</td>
-      <td><button onclick="supprimerLigne(this)">❌</button></td>`;
+    newRow.innerHTML = `<td contenteditable="true">${values[0] || ""}</td>
+                        <td contenteditable="true">${values[1] || ""}</td>
+                        <td><button onclick="supprimerLigne(this)">❌</button></td>`;
   } else {
-    newRow.innerHTML = `
-      <td contenteditable="true">${values[0] || ""}</td>
-      <td><button onclick="supprimerLigne(this)">❌</button></td>`;
+    newRow.innerHTML = `<td contenteditable="true">${values[0] || ""}</td>
+                        <td><button onclick="supprimerLigne(this)">❌</button></td>`;
   }
   newRow.querySelectorAll('td[contenteditable]').forEach(td => {
     td.addEventListener('input', sauvegarder);
@@ -247,10 +239,10 @@ function ajouterLigne(tableId, values = []) {
   });
   sauvegarder();
 }
-
 function supprimerLigne(btn) { btn.parentNode.parentNode.remove(); sauvegarder(); }
 function resetTable(tableId) { document.getElementById(tableId).getElementsByTagName('tbody')[0].innerHTML = ""; sauvegarder(); }
 
+// Lecture des tables
 function lireTableBagues() {
   return Array.from(document.querySelectorAll("#tableBagues tbody tr"))
     .map(r => { const ext = parseFloat(r.cells[0].innerText), int = parseFloat(r.cells[1].innerText); return { ext, int }; })
@@ -262,6 +254,7 @@ function lireTableFraises() {
     .filter(f => !isNaN(f.d));
 }
 
+// Sauvegarde / chargement localStorage
 function sauvegarder() {
   const bagues = [], fraises = [];
   document.querySelectorAll("#tableBagues tbody tr").forEach(r => bagues.push([r.cells[0].innerText, r.cells[1].innerText]));
@@ -271,66 +264,65 @@ function sauvegarder() {
 }
 
 function charger() {
-  const bagues = JSON.parse(localStorage.getItem("bagues") || "[]"),
-        fraises = JSON.parse(localStorage.getItem("fraises") || "[]");
+  let bagues = JSON.parse(localStorage.getItem("bagues") || "[]");
+  let fraises = JSON.parse(localStorage.getItem("fraises") || "[]");
+  if (bagues.length === 0) bagues = [[10,8],[12,10],[14,12],[16,14],[18,16]];
+  if (fraises.length === 0) fraises = [[8],[10],[12],[14],[16],[19]];
+
   bagues.forEach(b => ajouterLigne('tableBagues', b));
   fraises.forEach(f => ajouterLigne('tableFraises', f));
+
   const resP = localStorage.getItem("resultatsPrincipal");
-  if (resP) document.getElementById("resultatsPrincipal").innerHTML = resP;
+  if(resP) document.getElementById("resultatsPrincipal").innerHTML = resP;
   const resI = localStorage.getItem("resultatsInclusion");
-  if (resI) document.getElementById("resultatsInclusion").innerHTML = resI;
-  if (bagues.length === 0) ajouterLigne('tableBagues', [24, 20]);
-  if (fraises.length === 0) ajouterLigne('tableFraises', [8]);
+  if(resI) document.getElementById("resultatsInclusion").innerHTML = resI;
 }
 
-function calculer(mode = "all") {
-  const bagues = lireTableBagues(), fraises = lireTableFraises(), tol = 0.01;
+// Calculs
+function calculer(mode="all") {
+  const bagues = lireTableBagues(), fraises = lireTableFraises(), tol=0.01;
 
-  if (mode === "principal" || mode === "all") {
-    let html1 = "";
-    fraises.forEach(f => {
-      for (let i = 0; i < bagues.length; i++) {
-        for (let j = i + 1; j < bagues.length; j++) {
-          let [bSmall, bLarge, intSmall, intLarge] = bagues[i].ext <= bagues[j].ext ? [bagues[i].ext, bagues[j].ext, bagues[i].int, bagues[j].int] : [bagues[j].ext, bagues[i].ext, bagues[j].int, bagues[i].int];
-          if (f.d <= intSmall && f.d <= intLarge) {
-            const delta = (bSmall + f.d) / 2;
-            if (Math.abs(delta - (bLarge - f.d) / 2) < tol) {
-              html1 += `<tr class="principal">
-                <td><span class="fraise-cell">F${f.d}</span></td>
-                <td><span class="couple-cell">B${bSmall} / B${bLarge}</span></td>
-                <td><span class="decalage-cell">${delta.toFixed(2)}</span></td>
-              </tr>`;
+  if(mode==="principal" || mode==="all") {
+    let html1="";
+    fraises.forEach(f=>{
+      for(let i=0;i<bagues.length;i++){
+        for(let j=i+1;j<bagues.length;j++){
+          let [bSmall,bLarge,intSmall,intLarge]=bagues[i].ext<=bagues[j].ext?[bagues[i].ext,bagues[j].ext,bagues[i].int,bagues[j].int]:[bagues[j].ext,bagues[i].ext,bagues[j].int,bagues[i].int];
+          if(f.d<=intSmall && f.d<=intLarge){
+            const delta=(bSmall+f.d)/2;
+            if(Math.abs(delta-(bLarge-f.d)/2)<tol){
+              html1+=`<tr><td><span class="fraise-cell">F${f.d}</span></td>
+                        <td><span class="couple-cell">B${bSmall} / B${bLarge}</span></td>
+                        <td><span class="decalage-cell">${delta.toFixed(2)}</span></td></tr>`;
             }
           }
         }
       }
     });
-    document.getElementById("resultatsPrincipal").innerHTML = html1;
-    localStorage.setItem("resultatsPrincipal", html1);
+    document.getElementById("resultatsPrincipal").innerHTML=html1;
+    localStorage.setItem("resultatsPrincipal",html1);
   }
 
-  if (mode === "inclusion" || mode === "all") {
-    let html2 = "";
-    const seen = new Set();
-    for (let i = 0; i < bagues.length; i++) {
-      for (let j = i + 1; j < bagues.length; j++) {
-        let [bSmall, bLarge, intSmall, intLarge] = bagues[i].ext <= bagues[j].ext ? [bagues[i].ext, bagues[j].ext, bagues[i].int, bagues[j].int] : [bagues[j].ext, bagues[i].ext, bagues[j].int, bagues[i].int];
-        fraises.forEach(f1 => {
-          fraises.forEach(f2 => {
-            if (f1.d === f2.d) return;
-            if (f1.d <= intSmall && f2.d <= intLarge) {
-              const delta = (bSmall + f1.d) / 2;
-              if (Math.abs(delta - (bLarge - f2.d) / 2) < tol) {
-                const key = `${bSmall}_${bLarge}_${f1.d}_${f2.d}`;
-                if (!seen.has(key)) {
+  if(mode==="inclusion"||mode==="all"){
+    let html2="";
+    const seen=new Set();
+    for(let i=0;i<bagues.length;i++){
+      for(let j=i+1;j<bagues.length;j++){
+        let [bSmall,bLarge,intSmall,intLarge]=bagues[i].ext<=bagues[j].ext?[bagues[i].ext,bagues[j].ext,bagues[i].int,bagues[j].int]:[bagues[j].ext,bagues[i].ext,bagues[j].int,bagues[i].int];
+        fraises.forEach(f1=>{
+          fraises.forEach(f2=>{
+            if(f1.d===f2.d) return;
+            if(f1.d<=intSmall && f2.d<=intLarge){
+              const delta=(bSmall+f1.d)/2;
+              if(Math.abs(delta-(bLarge-f2.d)/2)<tol){
+                const key=`${bSmall}_${bLarge}_${f1.d}_${f2.d}`;
+                if(!seen.has(key)){
                   seen.add(key);
-                  html2 += `<tr class="alternative">
-                    <td>
-                      <span class="couple-cell">F${f1.d} / B${bSmall}</span>
-                      <span class="couple-cell">F${f2.d} / B${bLarge}</span>
-                    </td>
-                    <td><span class="decalage-cell">${delta.toFixed(2)}</span></td>
-                  </tr>`;
+                  html2+=`<tr><td>
+                            <span class="couple-cell">F${f1.d} / B${bSmall}</span>
+                            <span class="couple-cell">F${f2.d} / B${bLarge}</span>
+                            </td>
+                            <td><span class="decalage-cell">${delta.toFixed(2)}</span></td></tr>`;
                 }
               }
             }
@@ -338,12 +330,12 @@ function calculer(mode = "all") {
         });
       }
     }
-    document.getElementById("resultatsInclusion").innerHTML = html2;
-    localStorage.setItem("resultatsInclusion", html2);
+    document.getElementById("resultatsInclusion").innerHTML=html2;
+    localStorage.setItem("resultatsInclusion",html2);
   }
 }
 
-window.onload = charger;
+window.onload=charger;
 </script>
 
 </body>
