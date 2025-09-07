@@ -1,355 +1,469 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Calcul Bague/Fraise</title>
-<style>
-body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
-  background: #f5f5f5;
-}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Calcul bague / fraise</title>
+  <style>
+    :root{
+      --cell-font-size: clamp(14px, 4vw, 18px);
+      --cell-padding-y: 12px;
+      --cell-padding-x: 10px;
+      --pill-padding-y: clamp(8px, 2.5vw, 12px);
+      --pill-padding-x: clamp(10px, 3vw, 16px);
+      --gap-between-cells: 4px;
+    }
 
-/* Titre */
-h2 {
-  text-align: center;
-  background: #007bff;
-  color: white;
-  padding: 12px 0;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
 
-/* Onglets */
-.tabs {
-  display: flex;
-  margin: 20px 0;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-.tab-button {
-  flex: 1;
-  padding: 14px;
-  cursor: pointer;
-  border: none;
-  font-weight: bold;
-  background: #e0e0e0;
-  transition: 0.3s;
-  font-size: 16px;
-}
-.tab-button.active {
-  background: #007bff;
-  color: white;
-}
+    h1 {
+      background-color: #1E90FF;
+      color: white;
+      padding: 10px;
+      margin: 0;
+      font-size: clamp(18px, 5vw, 26px);
+    }
 
-/* Contenu onglet */
-.tab-content {
-  display: none;
-  background: transparent;
-  padding: 0;
-  margin-top: 0;
-}
-.tab-content.active {
-  display: block;
-}
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin: 15px 8px;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tab-button {
+      background-color: #e0e0e0;
+      border: none;
+      padding: 10px 18px;
+      font-size: clamp(14px, 4vw, 18px);
+      cursor: pointer;
+      border-radius: 8px;
+      font-weight: bold;
+      min-width: 140px;
+    }
+    .tab-button.active { background-color: #1E90FF; color: white; }
 
-/* Boutons généraux */
-button {
-  padding: 12px 20px;
-  margin: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  border-radius: 6px;
-  border: none;
-  background: #007bff;
-  color: white;
-  transition: 0.2s;
-}
-button:hover {
-  background: #0056b3;
-}
+    .tab-content { display: none; padding: 10px; }
+    .tab-content.active { display: block; }
 
-/* Table style "Filetage" */
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  margin-bottom: 20px;
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  border-radius: 12px;
-  overflow: hidden;
-}
+    .action-buttons { margin: 10px 0; display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+    .action-buttons button {
+      padding: 10px 16px;
+      margin: 0;
+      font-size: clamp(14px, 4vw, 18px);
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background-color: #1E90FF;
+      color: white;
+      font-weight: bold;
+    }
 
-/* En-têtes */
-th {
-  background: #007bff;
-  color: white;
-  font-weight: bold;
-  padding: 12px;
-  text-align: center;
-}
+    .table-container { width: 100%; overflow-x: auto; margin-top: 12px; padding: 0 8px; box-sizing: border-box; }
 
-/* Cellules */
-td {
-  background: #f9f9f9;
-  text-align: center;
-  padding: 10px 12px;
-  vertical-align: middle;
-  word-break: break-word;
-}
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: var(--gap-between-cells);
+      font-size: var(--cell-font-size);
+      text-align: center;
+      margin-bottom: 12px;
+    }
 
-/* Alternance de couleur des lignes pour meilleure lisibilité */
-tbody tr:nth-child(odd) td {
-  background: #e0e6ed; /* fond légèrement plus foncé */
-}
-tbody tr:nth-child(even) td {
-  background: #ffffff; /* fond clair */
-}
+    th, td {
+      padding: var(--cell-padding-y) var(--cell-padding-x);
+      border-radius: 10px;
+      font-weight: 600;
+      line-height: 1.25;
+      vertical-align: middle;
+      word-break: break-word;
+      box-sizing: border-box;
+    }
 
-/* Cellules contenteditable et texte responsive */
-td[contenteditable] {
-  background: inherit; /* prend la couleur de la ligne */
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: clamp(6px,2vw,12px) clamp(8px,2vw,16px);
-  font-size: clamp(14px,4vw,18px);
-  min-width: 50px;
-  line-height: 1.4em;
-  vertical-align: middle;
-}
+    th {
+      background-color: #1E90FF;
+      color: #fff;
+      font-size: clamp(15px, 4vw, 22px);
+    }
 
-/* Spans pour couple / fraise / décalage */
-.couple-cell, .fraise-cell, .decalage-cell {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-weight: bold;
-  margin: 2px 2px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-.fraise-cell { background: #d0e8ff; color: #000; }
-.couple-cell { background: #b8f5d4; color: #000; }
-.decalage-cell { background: #fff3cd; color: #000; }
+    tbody tr:nth-child(even) td { background-color: #f2f6fc; }
+    tbody tr:nth-child(odd) td  { background-color: #e9eef8; }
 
-/* Responsive */
-@media(max-width:600px) {
-  table {
-    display: block;
-    overflow-x: auto;
-  }
-  th, td {
-    white-space: nowrap;
-  }
-}
-</style>
+    td[contenteditable] {
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 8px;
+      padding: var(--cell-padding-y) var(--cell-padding-x);
+      font-size: var(--cell-font-size);
+      min-width: 44px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .fraise-cell, .couple-cell, .decalage-cell {
+      display:inline-block;
+      padding: var(--pill-padding-y) var(--pill-padding-x);
+      border-radius: 10px;
+      font-weight:700;
+      margin: 2px 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+      font-size: var(--cell-font-size);
+      min-width: 48px;
+    }
+    .fraise-cell { background:#cce0ff; color:#003366; }
+    .couple-cell { background:#c8f7c5; color:#064d00; }
+    .decalage-cell { background:#ffe9a7; color:#663c00; }
+
+    .delete-btn {
+      background:#ff4d4d;
+      color:white;
+      border:none;
+      padding:6px 10px;
+      border-radius:6px;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    @media (max-width:600px){
+      th, td { padding: calc(var(--cell-padding-y) + 4px) calc(var(--cell-padding-x) - 2px); }
+      .fraise-cell, .couple-cell, .decalage-cell {
+        font-size: clamp(16px, 4.5vw, 22px);
+        padding: calc(var(--pill-padding-y) + 2px) calc(var(--pill-padding-x) + 2px);
+      }
+      .tab-button { min-width: 110px; }
+    }
+  </style>
 </head>
 <body>
 
-<h2>⚙️ Calcul des couples bague/fraise</h2>
+  <h1>⚙️ Calcul des couples bague/fraise</h1>
 
-<div class="tabs">
-  <button class="tab-button active" onclick="openTab('tab1', this)">2 Bagues 1 Fraise</button>
-  <button class="tab-button" onclick="openTab('tab2', this)">2 Bagues 2 Fraises</button>
-  <button class="tab-button" onclick="openTab('tab3', this)">Bagues & Fraises</button>
-</div>
+  <!-- Onglets -->
+  <div class="tabs">
+    <button class="tab-button active" onclick="openTab(0)">2 Bagues 1 Fraise</button>
+    <button class="tab-button" onclick="openTab(1)">2 Bagues 2 Fraises</button>
+    <button class="tab-button" onclick="openTab(2)">Bagues & Fraises</button>
+  </div>
 
-<div id="tab1" class="tab-content active">
-  <button onclick="calculer('principal')">📊 Calculer</button>
-  <table>
-    <thead>
-      <tr>
-        <th>Ø Fraise</th>
-        <th>Couples (fraise / bague)</th>
-        <th>Décalage</th>
-      </tr>
-    </thead>
-    <tbody id="resultatsPrincipal"></tbody>
-  </table>
-</div>
+  <!-- Onglet 1 -->
+  <div class="tab-content active">
+    <div class="action-buttons">
+      <button onclick="calculer('principal')">Calculer</button>
+    </div>
+    <p style="font-weight:bold; color:#333; margin:8px 0;">
+      🔵 Grosse bague = tenon<br>
+      🟢 Petite bague = mortaise
+    </p>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr><th>Ø Fraise</th><th>Couples (fraise / bague)</th><th>Décalage</th></tr>
+        </thead>
+        <tbody id="resultatsPrincipal"></tbody>
+      </table>
+    </div>
+  </div>
 
-<div id="tab2" class="tab-content">
-  <button onclick="calculer('inclusion')">📊 Calculer</button>
-  <table>
-    <thead>
-      <tr>
-        <th>Couples (fraise / bague)</th>
-        <th>Décalage</th>
-      </tr>
-    </thead>
-    <tbody id="resultatsInclusion"></tbody>
-  </table>
-</div>
+  <!-- Onglet 2 -->
+  <div class="tab-content">
+    <div class="action-buttons">
+      <button onclick="calculer('inclusion')">Calculer</button>
+    </div>
+    <p style="font-weight:bold; color:#333; margin:8px 0;">
+      🔵 Grosse bague = tenon<br>
+      🟢 Petite bague = mortaise
+    </p>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr><th>Couples (fraise / bague)</th><th>Décalage</th></tr>
+        </thead>
+        <tbody id="resultatsInclusion"></tbody>
+      </table>
+    </div>
+  </div>
 
-<div id="tab3" class="tab-content">
-  <button onclick="calculer('all')">📊 Calculer tous</button>
+  <!-- Onglet 3 -->
+  <div class="tab-content">
+    <div class="action-buttons">
+      <button onclick="calculer('all')">📊 Calculer tous</button>
+      <button onclick="viderTables()">🗑️ Vider tout</button>
+    </div>
 
-  <h3>Bagues disponibles</h3>
-  <table id="tableBagues">
-    <thead>
-      <tr>
-        <th>Ø Extérieur</th>
-        <th>Ø Intérieur (limite fraise)</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-  <button onclick="ajouterLigne('tableBagues')">➕ Ajouter une bague</button>
-  <button onclick="resetTable('tableBagues')">🗑️ Vider toutes les bagues</button>
+    <div class="table-container">
+      <table id="tableBagues">
+        <thead>
+          <tr><th>Ø Extérieur</th><th>Ø Intérieur (limite fraise)</th><th>Action</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="action-buttons">
+        <button onclick="ajouterBagues()">➕ Ajouter bague</button>
+      </div>
+    </div>
 
-  <h3>Fraises disponibles</h3>
-  <table id="tableFraises">
-    <thead>
-      <tr>
-        <th>Ø Fraise</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-  <button onclick="ajouterLigne('tableFraises')">➕ Ajouter une fraise</button>
-  <button onclick="resetTable('tableFraises')">🗑️ Vider toutes les fraises</button>
-</div>
+    <div class="table-container">
+      <table id="tableFraises">
+        <thead>
+          <tr><th>Ø Fraise</th><th>Action</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="action-buttons">
+        <button onclick="ajouterFraise()">➕ Ajouter fraise</button>
+      </div>
+    </div>
+  </div>
 
 <script>
-function openTab(tabId, btn) {
-  document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
-  document.getElementById(tabId).classList.add("active");
-  document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
+const STORAGE_KEY = 'fraiseBagueData_v1';
+
+const DEFAULT = {
+  bagues: [
+    { ext: '10', int: '8' },
+    { ext: '12', int: '10' },
+    { ext: '14', int: '12' },
+    { ext: '16', int: '14' },
+    { ext: '18', int: '16' },
+    { ext: '20', int: '18' },
+    { ext: '24', int: '22' },
+    { ext: '30', int: '28' },
+    { ext: '40', int: '28' },
+    { ext: '50', int: '28' },
+    { ext: '60', int: '28' }
+  ],
+  fraises: [
+    { d: '8' }, { d: '10' }, { d: '12' }, { d: '14' }, { d: '16' }, { d: '19' }
+  ]
+};
+
+function loadData(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(!raw) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT));
+    return JSON.parse(JSON.stringify(DEFAULT));
+  }
+  try {
+    return JSON.parse(raw);
+  } catch(e){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT));
+    return JSON.parse(JSON.stringify(DEFAULT));
+  }
+}
+function saveData(data){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-function ajouterLigne(tableId, values = []) {
-  const table = document.getElementById(tableId).getElementsByTagName('tbody')[0];
-  const newRow = table.insertRow();
-  if (tableId === 'tableBagues') {
-    newRow.innerHTML = `
-      <td contenteditable="true">${values[0] || ""}</td>
-      <td contenteditable="true">${values[1] || ""}</td>
-      <td><button onclick="supprimerLigne(this)">❌</button></td>`;
-  } else {
-    newRow.innerHTML = `
-      <td contenteditable="true">${values[0] || ""}</td>
-      <td><button onclick="supprimerLigne(this)">❌</button></td>`;
-  }
-  newRow.querySelectorAll('td[contenteditable]').forEach(td => {
-    td.addEventListener('input', sauvegarder);
-    td.addEventListener('blur', sauvegarder);
+function renderTab3(){
+  const data = loadData();
+  const tbodyB = document.querySelector('#tableBagues tbody');
+  tbodyB.innerHTML = '';
+  data.bagues.forEach((b, idx) => {
+    const tr = document.createElement('tr');
+
+    const tdExt = document.createElement('td');
+    tdExt.contentEditable = 'true';
+    tdExt.innerText = b.ext;
+    tdExt.addEventListener('input', onEditTable);
+    tdExt.dataset.type = 'bague-ext';
+    tdExt.dataset.index = idx;
+
+    const tdInt = document.createElement('td');
+    tdInt.contentEditable = 'true';
+    tdInt.innerText = b.int;
+    tdInt.addEventListener('input', onEditTable);
+    tdInt.dataset.type = 'bague-int';
+    tdInt.dataset.index = idx;
+
+    const tdAction = document.createElement('td');
+    const del = document.createElement('button');
+    del.innerText = 'X';
+    del.className = 'delete-btn';
+    del.addEventListener('click', ()=>{ supprimerBague(idx); });
+    tdAction.appendChild(del);
+
+    tr.appendChild(tdExt);
+    tr.appendChild(tdInt);
+    tr.appendChild(tdAction);
+    tbodyB.appendChild(tr);
   });
-  sauvegarder();
+
+  const tbodyF = document.querySelector('#tableFraises tbody');
+  tbodyF.innerHTML = '';
+  data.fraises.forEach((f, idx) => {
+    const tr = document.createElement('tr');
+
+    const tdD = document.createElement('td');
+    tdD.contentEditable = 'true';
+    tdD.innerText = f.d;
+    tdD.addEventListener('input', onEditTable);
+    tdD.dataset.type = 'fraise-d';
+    tdD.dataset.index = idx;
+
+    const tdAction = document.createElement('td');
+    const del = document.createElement('button');
+    del.innerText = 'X';
+    del.className = 'delete-btn';
+    del.addEventListener('click', ()=>{ supprimerFraise(idx); });
+    tdAction.appendChild(del);
+
+    tr.appendChild(tdD);
+    tr.appendChild(tdAction);
+    tbodyF.appendChild(tr);
+  });
 }
 
-function supprimerLigne(btn) { btn.parentNode.parentNode.remove(); sauvegarder(); }
-function resetTable(tableId) { document.getElementById(tableId).getElementsByTagName('tbody')[0].innerHTML = ""; sauvegarder(); }
-
-function lireTableBagues() {
-  return Array.from(document.querySelectorAll("#tableBagues tbody tr"))
-    .map(r => { const ext = parseFloat(r.cells[0].innerText), int = parseFloat(r.cells[1].innerText); return { ext, int }; })
-    .filter(b => !isNaN(b.ext) && !isNaN(b.int));
-}
-function lireTableFraises() {
-  return Array.from(document.querySelectorAll("#tableFraises tbody tr"))
-    .map(r => { const d = parseFloat(r.cells[0].innerText); return { d }; })
-    .filter(f => !isNaN(f.d));
-}
-
-function sauvegarder() {
-  const bagues = [], fraises = [];
-  document.querySelectorAll("#tableBagues tbody tr").forEach(r => bagues.push([r.cells[0].innerText, r.cells[1].innerText]));
-  document.querySelectorAll("#tableFraises tbody tr").forEach(r => fraises.push([r.cells[0].innerText]));
-  localStorage.setItem("bagues", JSON.stringify(bagues));
-  localStorage.setItem("fraises", JSON.stringify(fraises));
+function onEditTable(){
+  const bagues = Array.from(document.querySelectorAll('#tableBagues tbody tr')).map(r => {
+    const ext = r.cells[0].innerText.trim().replace(',', '.');
+    const int = r.cells[1].innerText.trim().replace(',', '.');
+    return { ext, int };
+  });
+  const fraises = Array.from(document.querySelectorAll('#tableFraises tbody tr')).map(r => {
+    const d = r.cells[0].innerText.trim().replace(',', '.');
+    return { d };
+  });
+  const data = { bagues, fraises };
+  saveData(data);
 }
 
-function charger() {
-  let bagues = JSON.parse(localStorage.getItem("bagues") || "[]");
-  let fraises = JSON.parse(localStorage.getItem("fraises") || "[]");
-
-  if (bagues.length === 0) {
-    bagues = [
-      [10, 8], [12, 10], [14, 12], [16, 14], [18, 16],
-      [20, 18], [24, 22], [30, 28], [40, 28], [60, 28]
-    ];
-  }
-  if (fraises.length === 0) {
-    fraises = [8, 10, 12, 14, 16, 19].map(d => [d]);
-  }
-
-  bagues.forEach(b => ajouterLigne('tableBagues', b));
-  fraises.forEach(f => ajouterLigne('tableFraises', f));
-
-  const resP = localStorage.getItem("resultatsPrincipal");
-  if (resP) document.getElementById("resultatsPrincipal").innerHTML = resP;
-  const resI = localStorage.getItem("resultatsInclusion");
-  if (resI) document.getElementById("resultatsInclusion").innerHTML = resI;
+function ajouterBagues(){
+  const data = loadData();
+  data.bagues.push({ ext: '', int: '' });
+  saveData(data);
+  renderTab3();
+}
+function ajouterFraise(){
+  const data = loadData();
+  data.fraises.push({ d: '' });
+  saveData(data);
+  renderTab3();
+}
+function supprimerBague(index){
+  const data = loadData();
+  data.bagues.splice(index,1);
+  saveData(data);
+  renderTab3();
+}
+function supprimerFraise(index){
+  const data = loadData();
+  data.fraises.splice(index,1);
+  saveData(data);
+  renderTab3();
+}
+function viderTables(){
+  if(!confirm('Vider toutes les bagues et fraises et remettre les valeurs par défaut ?')) return;
+  // Remettre les valeurs par défaut
+  const data = JSON.parse(JSON.stringify(DEFAULT));
+  saveData(data);
+  renderTab3();
+  renderResults();
 }
 
-function calculer(mode = "all") {
-  const bagues = lireTableBagues(), fraises = lireTableFraises(), tol = 0.01;
+function parseNum(str){
+  if(str === undefined || str === null) return NaN;
+  const s = String(str).trim().replace(',', '.');
+  const v = parseFloat(s);
+  return isFinite(v) ? v : NaN;
+}
 
-  if (mode === "principal" || mode === "all") {
-    let html1 = "";
-    fraises.forEach(f => {
-      for (let i = 0; i < bagues.length; i++) {
-        for (let j = i + 1; j < bagues.length; j++) {
-          let [bSmall, bLarge, intSmall, intLarge] = bagues[i].ext <= bagues[j].ext ? [bagues[i].ext, bagues[j].ext, bagues[i].int, bagues[j].int] : [bagues[j].ext, bagues[i].ext, bagues[j].int, bagues[i].int];
-          if (f.d <= intSmall && f.d <= intLarge) {
-            const delta = (bSmall + f.d) / 2;
-            if (Math.abs(delta - (bLarge - f.d) / 2) < tol) {
-              html1 += `<tr>
-                <td><span class="fraise-cell">F${f.d}</span></td>
-                <td><span class="couple-cell">B${bSmall} / B${bLarge}</span></td>
-                <td><span class="decalage-cell">${delta.toFixed(2)}</span></td>
-              </tr>`;
-            }
+function lireBaguesPourCalc(){
+  const data = loadData();
+  return data.bagues.map(b => {
+    return { ext: parseNum(b.ext), int: parseNum(b.int) };
+  }).filter(b => !isNaN(b.ext) && !isNaN(b.int));
+}
+function lireFraisesPourCalc(){
+  const data = loadData();
+  return data.fraises.map(f => ({ d: parseNum(f.d) })).filter(f => !isNaN(f.d));
+}
+
+function renderResults(){
+  const bagues = lireBaguesPourCalc();
+  const fraises = lireFraisesPourCalc();
+  const tol = 0.01;
+
+  let html1 = '';
+  fraises.forEach(f=>{
+    for(let i=0;i<bagues.length;i++){
+      for(let j=i+1;j<bagues.length;j++){
+        let [bSmall,bLarge,intSmall,intLarge] = bagues[i].ext <= bagues[j].ext
+          ? [bagues[i].ext, bagues[j].ext, bagues[i].int, bagues[j].int]
+          : [bagues[j].ext, bagues[i].ext, bagues[j].int, bagues[i].int];
+        if(f.d <= intSmall && f.d <= intLarge){
+          const delta = (bSmall + f.d) / 2;
+          if(Math.abs(delta - (bLarge - f.d) / 2) < tol){
+            html1 += `<tr>
+                       <td><span class="fraise-cell">F${f.d}</span></td>
+                       <td><span class="couple-cell">B${bSmall} / B${bLarge}</span></td>
+                       <td><span class="decalage-cell">${delta.toFixed(2)}</span></td>
+                      </tr>`;
           }
         }
       }
-    });
-    document.getElementById("resultatsPrincipal").innerHTML = html1;
-    localStorage.setItem("resultatsPrincipal", html1);
-  }
+    }
+  });
+  document.getElementById('resultatsPrincipal').innerHTML = html1 || `<tr><td colspan="3">Aucun résultat</td></tr>`;
 
-  if (mode === "inclusion" || mode === "all") {
-    let html2 = "";
-    const seen = new Set();
-    for (let i = 0; i < bagues.length; i++) {
-      for (let j = i + 1; j < bagues.length; j++) {
-        let [bSmall, bLarge, intSmall, intLarge] = bagues[i].ext <= bagues[j].ext ? [bagues[i].ext, bagues[j].ext, bagues[i].int, bagues[j].int] : [bagues[j].ext, bagues[i].ext, bagues[j].int, bagues[i].int];
-        fraises.forEach(f1 => {
-          fraises.forEach(f2 => {
-            if (f1.d === f2.d) return;
-            if (f1.d <= intSmall && f2.d <= intLarge) {
-              const delta = (bSmall + f1.d) / 2;
-              if (Math.abs(delta - (bLarge - f2.d) / 2) < tol) {
-                const key = `${bSmall}_${bLarge}_${f1.d}_${f2.d}`;
-                if (!seen.has(key)) {
-                  seen.add(key);
-                  html2 += `<tr>
-                    <td>
-                      <span class="couple-cell">F${f1.d} / B${bSmall}</span>
-                      <span class="couple-cell">F${f2.d} / B${bLarge}</span>
-                    </td>
-                    <td><span class="decalage-cell">${delta.toFixed(2)}</span></td>
-                  </tr>`;
-                }
+  let html2 = '';
+  const seen = new Set();
+  for(let i=0;i<bagues.length;i++){
+    for(let j=i+1;j<bagues.length;j++){
+      let [bSmall,bLarge,intSmall,intLarge] = bagues[i].ext <= bagues[j].ext
+        ? [bagues[i].ext, bagues[j].ext, bagues[i].int, bagues[j].int]
+        : [bagues[j].ext, bagues[i].ext, bagues[j].int, bagues[i].int];
+      fraises.forEach(f1=>{
+        fraises.forEach(f2=>{
+          if(f1.d === f2.d) return;
+          if(f1.d <= intSmall && f2.d <= intLarge){
+            const delta = (bSmall + f1.d) / 2;
+            if(Math.abs(delta - (bLarge - f2.d) / 2) < tol){
+              const key = `${bSmall}_${bLarge}_${f1.d}_${f2.d}`;
+              if(!seen.has(key)){
+                seen.add(key);
+                html2 += `<tr>
+                           <td>
+                             <span class="couple-cell">F${f1.d} / B${bSmall}</span>
+                             <span class="couple-cell">F${f2.d} / B${bLarge}</span>
+                           </td>
+                           <td><span class="decalage-cell">${delta.toFixed(2)}</span></td>
+                          </tr>`;
               }
             }
-          });
+          }
         });
-      }
+      });
     }
-    document.getElementById("resultatsInclusion").innerHTML = html2;
-    localStorage.setItem("resultatsInclusion", html2);
   }
+  document.getElementById('resultatsInclusion').innerHTML = html2 || `<tr><td colspan="2">Aucun résultat</td></tr>`;
 }
 
-window.onload = charger;
+function calculer(mode){
+  renderResults();
+}
+
+function renderAll(){
+  renderTab3();
+  renderResults();
+}
+
+function openTab(index){
+  const contents = document.querySelectorAll('.tab-content');
+  const buttons  = document.querySelectorAll('.tab-button');
+  contents.forEach((c,i)=>c.classList.toggle('active', i===index));
+  buttons.forEach((b,i)=>b.classList.toggle('active', i===index));
+}
+
+window.addEventListener('load', ()=>{
+  renderAll();
+  window.addEventListener('beforeunload', ()=>{ onEditTable(); });
+});
 </script>
 
 </body>
 </html>
-
